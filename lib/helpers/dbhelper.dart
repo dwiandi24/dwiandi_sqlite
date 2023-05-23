@@ -23,7 +23,7 @@ class DbHelper{
   }
 
   void _createDb(Database db, int version) async {
-    await db.execute("""CREATE TABLE contact (id INTEGER, name TEXT, phone TEXT)""");
+    await db.execute("""CREATE TABLE contact (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name TEXT, phone TEXT)""");
   }
 
   Future<Database> get database async {

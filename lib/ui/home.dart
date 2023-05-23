@@ -17,6 +17,12 @@ class _HomeState extends State<Home> {
   int count = 0;
   List<Contact> contactList = [];
 
+ @override
+  void initState() {
+    super.initState();
+    updateListView(); // Loading the diary when the app starts
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
