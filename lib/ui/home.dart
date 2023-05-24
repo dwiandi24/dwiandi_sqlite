@@ -17,12 +17,6 @@ class _HomeState extends State<Home> {
   int count = 0;
   List<Contact> contactList = [];
 
- @override
-  void initState() {
-    super.initState();
-    updateListView(); // Loading the diary when the app starts
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,23 +29,24 @@ class _HomeState extends State<Home> {
         tooltip: 'Tambah Data',
         onPressed: () async {
           var contact = await navigateToEntryForm(context, Contact('', ''));
-          if(contact.name != '' && contact.phone != '') addContact(contact);
+          if (contact.name != '' && contact.phone != '') addContact(contact);
         },
       ),
     );
   }
 
-  Future<Contact> navigateToEntryForm(BuildContext context, Contact contact) async {
-    var result = await Navigator.push(
-      context, 
-      MaterialPageRoute(builder: (BuildContext context){ return EntryForm(contact: contact); })
-      );
+  Future<Contact> navigateToEntryForm(
+      BuildContext context, Contact contact) async {
+    var result = await Navigator.push(context,
+        MaterialPageRoute(builder: (BuildContext context) {
+      return EntryForm(contact: contact);
+    }));
     return result;
   }
 
-  ListView createListView(){
+  ListView createListView() {
     return ListView.builder(
-      itemCount: count,
+      itemCount: 5,
       itemBuilder: (BuildContext context, int index) {
         return Card(
           color: Colors.white,
@@ -61,55 +56,20 @@ class _HomeState extends State<Home> {
               backgroundColor: Colors.red,
               child: Icon(Icons.people),
             ),
-          title: Text(this.contactList[index].name),
-          subtitle: Text(this.contactList[index].phone),
-          trailing: GestureDetector(
-            child: Icon(Icons.delete),
-            onTap: () {
-              deleteContact(contactList[index]);
-            },
+            title: Text('Nama'),
+            subtitle: Text('123456'),
+            trailing: GestureDetector(
+              child: Icon(Icons.delete),
+              onTap: () {},
+            ),
+            onTap: () async {},
           ),
-          onTap: () async {
-            var contact = await navigateToEntryForm(context, this.contactList[index]);
-            if(contact.name != '' && contact.phone != '') editContact(contact);
-          },
-          ),      
         );
       },
     );
   }
 
   void addContact(Contact object) async {
-    int result = await dbHelper.insert(object);
-    if (result > 0) {
-      updateListView();      
-    }
-  }
-
-  void editContact(Contact object) async {
-    int result = await dbHelper.update(object);
-    if (result > 0) {
-      updateListView();      
-    }
-  }
-
-  void deleteContact(Contact object) async {
-    int result = await dbHelper.delete(object.id);
-    if (result > 0) {
-      updateListView();      
-    }
-  }
-
-  void updateListView(){
-    final Future<Database> dbFuture = dbHelper.initDb();
-    dbFuture.then((database) {
-      Future<List<Contact>> contactListFuture = dbHelper.getContactList();
-      contactListFuture.then((contactList){
-        setState(() {
-          this.contactList = contactList;
-          this.count = contactList.length;
-        });
-      });
-    });
+    await dbHelper.insert(object);
   }
 }

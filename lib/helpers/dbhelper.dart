@@ -4,13 +4,13 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqlite/models/contact.dart';
 
-class DbHelper{
+class DbHelper {
   static late DbHelper _dbHelper;
   static late Database _database;
 
   DbHelper._createObject();
 
-  factory DbHelper(){
+  factory DbHelper() {
     _dbHelper = DbHelper._createObject();
     return _dbHelper;
   }
@@ -23,7 +23,8 @@ class DbHelper{
   }
 
   void _createDb(Database db, int version) async {
-    await db.execute("""CREATE TABLE contact (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name TEXT, phone TEXT)""");
+    await db.execute(
+        """CREATE TABLE contact (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name TEXT, phone TEXT)""");
   }
 
   Future<Database> get database async {
@@ -35,34 +36,5 @@ class DbHelper{
     Database db = await this.database;
     int count = await db.insert('contact', object.toMap());
     return count;
-  }
-
-  Future<List<Map<String, dynamic>>> select() async {
-    Database db = await this.database;
-    var mapList = await db.query('contact', orderBy: 'name');
-    return mapList;
-  }
-
-  Future<int> update(Contact object) async {
-    Database db = await this.database;
-    int count = await db.update('contact', object.toMap(), where: 'id=?', whereArgs: [object.id]);
-    return count;
-  }
-
-  Future<int> delete(int id) async {
-    Database db = await this.database;
-    int count = await db.delete('contact', where: 'id=?', whereArgs: [id]);
-    return count;
-  }
-
-  Future<List<Contact>> getContactList() async {
-    var contactMapList = await select();
-    int count = contactMapList.length;
-
-    List<Contact> contactList = [];
-    for(int i = 0; i < count; i++){
-      contactList.add(Contact.fromMap(contactMapList[i]));      
-    }
-    return contactList;
   }
 }

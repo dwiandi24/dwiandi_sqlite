@@ -24,7 +24,7 @@ class _EntryFormState extends State<EntryForm> {
     return Scaffold(
       appBar: AppBar(
         title: contact == null ? Text('Tambah Data') : Text('Ubah Data'),
-        leading:  Icon(Icons.keyboard_arrow_left),
+        leading: Icon(Icons.keyboard_arrow_left),
       ),
       body: Padding(
         padding: EdgeInsets.only(top: 15.0, left: 10.0, right: 10.0),
@@ -63,28 +63,35 @@ class _EntryFormState extends State<EntryForm> {
               child: Row(
                 children: [
                   Expanded(
-                    child: ElevatedButton(                      
-                      child: Text('Simpan', textScaleFactor: 1.5,),
-                      onPressed: () {
-                        if (contact == null) {
-                          contact = Contact(nameController.text, phoneController.text);
-                        } else {
-                          contact.name = nameController.text;
-                          contact.phone = phoneController.text;
-                        }
-                        Navigator.pop(context,contact);
-                      },
-                    )
+                      child: ElevatedButton(
+                    child: Text(
+                      'Simpan',
+                      textScaleFactor: 1.5,
+                    ),
+                    onPressed: () {
+                      if (contact == null) {
+                        contact =
+                            Contact(nameController.text, phoneController.text);
+                      } else {
+                        contact.name = nameController.text;
+                        contact.phone = phoneController.text;
+                      }
+                      Navigator.pop(context, contact);
+                    },
+                  )),
+                  Container(
+                    width: 5.0,
                   ),
-                  Container(width: 5.0,),
                   Expanded(
-                    child: ElevatedButton(
-                      child: Text('Batal', textScaleFactor: 1.5,),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    )
-                  )
+                      child: ElevatedButton(
+                    child: Text(
+                      'Batal',
+                      textScaleFactor: 1.5,
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ))
                 ],
               ),
             )
