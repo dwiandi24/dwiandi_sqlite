@@ -78,7 +78,8 @@ class _EntryFormState extends State<EntryForm> {
                       }
                       Navigator.pop(context, contact);
                     },
-                  )),
+                  )
+                  ),
                   Container(
                     width: 5.0,
                   ),

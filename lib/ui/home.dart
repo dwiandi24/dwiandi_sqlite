@@ -18,6 +18,11 @@ class _HomeState extends State<Home> {
   List<Contact> contactList = [];
 
   @override
+  void initState(){
+    super.initState();
+    updateListView();
+  }
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -46,7 +51,7 @@ class _HomeState extends State<Home> {
 
   ListView createListView() {
     return ListView.builder(
-      itemCount: 5,
+      itemCount: count,
       itemBuilder: (BuildContext context, int index) {
         return Card(
           color: Colors.white,
@@ -56,13 +61,21 @@ class _HomeState extends State<Home> {
               backgroundColor: Colors.red,
               child: Icon(Icons.people),
             ),
-            title: Text('Nama'),
-            subtitle: Text('123456'),
+            title: Text(this.contactList[index].name),
+            subtitle: Text(this.contactList[index].phone),
             trailing: GestureDetector(
               child: Icon(Icons.delete),
-              onTap: () {},
+              onTap: () {
+                deleteContact(contactList[index]);
+              },
             ),
-            onTap: () async {},
+            onTap: () async {
+              var contact =
+                  await navigateToEntryForm(context, this.contactList[index]);
+              if (contact.name != '' && contact.phone != '') {
+                editContact(contact);
+              } 
+            },
           ),
         );
       },
@@ -70,6 +83,34 @@ class _HomeState extends State<Home> {
   }
 
   void addContact(Contact object) async {
-    await dbHelper.insert(object);
+    int result = await dbHelper.insert(object);
+    if (result>0){
+      updateListView();
+    }
   }
+   void editContact(Contact object) async {
+    int result = await dbHelper.update(object);
+    if (result>0){
+      updateListView();
+    }
+  }
+   void deleteContact(Contact object) async {
+    int result = await dbHelper.delete(object.id);
+    if (result>0){
+      updateListView();
+    }
+   }
+   void updateListView() {
+    final Future<Database> dbFuture = dbHelper.initDb();
+    dbFuture.then((database) {
+      Future<List<Contact>> contactListFuture = dbHelper.getContactList();
+      contactListFuture.then((contactList) {
+        setState(() {
+          this.contactList = contactList;
+          this.count = contactList.length;
+        });
+      });
+    });
+  }
+
 }
